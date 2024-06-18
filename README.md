@@ -8,13 +8,13 @@ Snowflake-dbt project!
 ### Credential
 -Snowflake Account Details
   - Add credential to Profile.yml file
-    Accountname
-    Password
-    Warehouse
-    Schema
-    Database
-    Role [Default role is ACCOUNTADMIN]
-    Test connection
+    1-Accountname
+    2-Password
+    3-Warehouse
+    4-Schema
+    5-Database
+    6-Role [Default role is ACCOUNTADMIN]
+    7-Test connection
 ### Snowflake Tables
     -use role accountadmin;[use role of your choice]
     -create or replace warehouse warehouse_name;
