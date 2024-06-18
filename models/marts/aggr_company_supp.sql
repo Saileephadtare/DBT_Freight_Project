@@ -1,4 +1,4 @@
--- {{ config(schema='xs_final') }}
+-- True if (at least 5 different companies and 2 different suppliers provide data for that day and lane and equipment type).
 
 with equip_datapoints as(
     select 
@@ -16,8 +16,6 @@ CREATED,
 EQUIPMENT_ID,
 ORIGIN_PID,
 DESTINATION_PID,
--- SUPPLIER_ID,
--- COMPANY_ID,
 avg(USD_charges) as avg_pricing,
 PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY USD_charges) AS median_daily_price,
 CASE 
@@ -27,8 +25,5 @@ END AS dq_ok
 
 from
 equip_datapoints
--- where created='2021-04-16' 
--- and origin_pid='898' and destination_pid='504' 
--- and equipment_id='2'
 group by 1,2,3,4
 order by 2

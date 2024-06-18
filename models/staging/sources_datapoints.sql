@@ -3,7 +3,7 @@ with raw_datapoints as
 
 select * from 
 
- {{ source('xn_raw', 'XS_DATAPOINTS_1') }}	
+ {{ source('xn_raw', 'XS_DATAPOINTS') }}	
 
 ),
 datapoints_staging as(

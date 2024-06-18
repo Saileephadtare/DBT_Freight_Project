@@ -12,8 +12,8 @@ sources:
         description: 'Information about cargo regions'   
       - name: exchange_rate
         description: 'Information about exchange rate for day'  
-      - name: XS_DATAPOINTS_1
+      - name: XS_DATAPOINTS
         description: 'Information about internal datapoints'   
-      - name: XS_CHARGES_1
+      - name: XS_CHARGES
         description: 'Information about charges'  
        

@@ -1,0 +1,122 @@
+--distinct year for data recived
+select distinct year(created) from XENETA_DB.XS_FINAL.EUIPMENT_AGGR; 
+
+-- average container shipping price of equipment type_2 from origin 898 to destination 504?
+
+SELECT EQR.AVG_PRICING
+,EQR.EQUIPMENT_ID 
+FROM
+XENETA_DB.XS_FINAL.EUIPMENT_AGGR AS EQR
+JOIN
+XENETA_DB.XS_FINAL.PORT_REGION_FCT AS PRT
+ON EQR.origin_pid=PRT.origin_pid AND EQR.DESTINATION_PID=PRT.DESTINATION_PID
+WHERE EQR.CREATED='2021-04-16' AND
+EQR.origin_pid='898' and EQR.destination_pid='504' AND EQUIPMENT_ID='2';
+
+
+
+--max avg pricing with equipment_type and lane
+select 
+eqp_agg.EQUIPMENT_ID
+,prg.SOURCE_NAME
+,prg.DESTINATION_NAME
+,max(avg_pricing)
+from XENETA_DB.XS_FINAL.EUIPMENT_AGGR as eqp_agg
+join XENETA_DB.XS_FINAL.PORT_REGION_FCT as prg 
+on eqp_agg.ORIGIN_PID=prg.ORIGIN_PID
+and eqp_agg.DESTINATION_PID=prg.DESTINATION_PID
+group by 1,2,3
+order by eqp_agg.equipment_id;
+
+--maximum average for each month for equipment type
+select 
+EQUIPMENT_ID
+,Month(CREATED) as Fin_Month
+,max(avg_pricing) as Max_Average
+from XENETA_DB.XS_FINAL.EUIPMENT_AGGR
+group by 1,2
+order by 1,2;
+
+---------Moving average for months
+WITH cte AS (
+    SELECT
+        eqp_agg.EQUIPMENT_ID,
+        eqp_agg.ORIGIN_PID,
+        eqp_agg.DESTINATION_PID,
+        eqp_agg.CREATED,
+        MONTH(eqp_agg.CREATED) AS Fin_Month,
+        AVG(eqp_agg.USD_CHARGES) OVER (
+            PARTITION BY eqp_agg.EQUIPMENT_ID, eqp_agg.ORIGIN_PID, eqp_agg.DESTINATION_PID
+            ORDER BY eqp_agg.CREATED
+            ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+        ) AS Moving_Avg
+    FROM XENETA_DB.XS_FINAL.DAILY_CAL AS eqp_agg
+)
+SELECT
+    EQUIPMENT_ID,
+    ORIGIN_PID,
+    DESTINATION_PID,
+    Fin_Month,
+    MAX(Moving_Avg) AS Max_Average
+FROM cte
+GROUP BY
+    EQUIPMENT_ID,
+    ORIGIN_PID,
+    DESTINATION_PID,
+    Fin_Month
+ORDER BY
+1,2,3,4;
+
+
+-------------Least and most contracts with Supplier and company 
+select 
+ MIN(COMPANY_ID) as Min_Buyer
+,MAX(COMPANY_ID) as Max_Buyer
+,MIN(SUPPLIER_ID)as Min_Seller
+,MAX(SUPPLIER_ID)as Max_Seller
+from XENETA_DB.XS_FINAL.PRICES;
+
+------ supplier and buyer details for lane
+select 
+count(equ_prc.SUPPLIER_ID) AS Supplier
+,count(equ_prc.COMPANY_ID) AS Buyer
+,eup_agg.ORIGIN_PID
+,eup_agg.DESTINATION_PID
+from XENETA_DB.XS_FINAL.EUIPMENT_AGGR as eup_agg
+join XENETA_DB.XS_FINAL.PRICES as equ_prc
+on eup_agg.ORIGIN_PID=equ_prc.ORIGIN_PID
+and eup_agg.DESTINATION_PID=equ_prc.DESTINATION_PID
+group by 3,4
+order by 1,2;
+
+-------------Lane with maximum average and median
+select 
+max(avg_pricing) as Max_Avg
+,max(median_daily_price) as Max_Median
+,prt.SOURCE_NAME
+,prt.DESTINATION_NAME
+from XENETA_DB.XS_FINAL.EUIPMENT_AGGR as eqr
+join
+XENETA_DB.XS_FINAL.PORT_REGION_FCT as prt
+on eqr.ORIGIN_PID=prt.ORIGIN_PID
+and eqr.DESTINATION_PID=prt.DESTINATION_PID
+group by 3,4;
+
+----------------Fact Tables QA
+--Valid records Charge values converted to USD based on currency exchnage rate
+select * from XENETA_DB.XS_FINAL.PRICES
+where created='2021-04-16' and origin_pid='898' and destination_pid='504' and equipment_id='2';
+
+--USD values sum up by grouping date,lane,equipment type,supplier,company
+select * from 
+XENETA_DB.XS_FINAL.DAILY_CAL
+where created='2021-04-16' and origin_pid='898' and destination_pid='504' and equipment_id='2';
+
+
+---average and meadin is calculated by grouping date,lane, and equipment type
+select * from 
+XENETA_DB.XS_FINAL.EUIPMENT_AGGR
+where created='2021-04-16'and origin_pid='898' and destination_pid='504' and equipment_id='2';
+
+--if lane,date and equipment with  >5 company and >2 spplier
+select count(*) from XENETA_DB.XS_FINAL.AGGR_COMPANY_SUPP where DQ_OK='False';
