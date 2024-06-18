@@ -1,4 +1,4 @@
--- {{ config(schema='xs_final') }}
+
 ------daily sum of usd charges with datapoint_id and date for equipment
 with overall_price as
 (

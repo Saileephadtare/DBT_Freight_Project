@@ -1,15 +1,36 @@
-Welcome to your new dbt project!
+Snowflake-dbt project!
 
-### Using the starter project
+### Prerequisite 
+-Snowflake Trial Account
+-DBT installation 
+  -pip install dbt[check snowflake plugin is supported or not]
 
-Try running the following commands:
-- dbt run
-- dbt test
-
-
-### Resources:
-- Learn more about dbt [in the docs](https://docs.getdbt.com/docs/introduction)
-- Check out [Discourse](https://discourse.getdbt.com/) for commonly asked questions and answers
-- Join the [chat](https://community.getdbt.com/) on Slack for live discussions and support
-- Find [dbt events](https://events.getdbt.com) near you
-- Check out [the blog](https://blog.getdbt.com/) for the latest news on dbt's development and best practices
+### Credential
+-Snowflake Account Details
+  - Add credential to Profile.yml file
+   1)Accountname
+   2)Password
+   3)Warehouse
+   4)Schema
+   5)Database
+   6)Role [Default role is ACCOUNTADMIN]
+   7)Test connection
+### Snowflake Tables
+    -use role accountadmin;[use role of your choice]
+    -create or replace warehouse warehouse_name;
+    -create or replace database database_name;
+    -create or replace schema raw_schema;
+    -load data manually and create table in the raw_schema
+### DBT Packages
+    -Install packages with the packages.yml 
+    -run dbt deps
+### DBT Models
+   - create dbt staging models in models folder[staging]
+   - create yml file for defining source and testing
+   - create dbt transfrmation model in models folder[marts]  
+   - Testing before creating model- dbt test
+   - Creating model in snowflake environment - dbt run or dbt run --select single_model
+### DBT Macro   
+   - macro for custom schema
+### EDA
+   - Data analysis to explore solution

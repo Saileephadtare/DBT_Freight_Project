@@ -1,4 +1,3 @@
--- {{ config(schema='xs_final') }}
 
 with stage_datapoints as 
 (
@@ -31,7 +30,6 @@ from datapoints_day as dt
 join 
 {{ref("sources_charges")}} as st
 on dt.D_ID=st.D_ID
--- where dt.D_ID='370463582'
 ),
 ----- joined charges table with exchange rate based on currecy 
 -----joined datapoints with exchange rate based on date

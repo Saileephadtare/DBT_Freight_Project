@@ -1,4 +1,4 @@
--- {{ config(schema='xs_final') }}
+
 
 -- join datapoints table with port table to get source country,slug and destination country and slug based on ID from datapoints
 WITH SRC_DEST_COUNTRY AS(
