@@ -1,0 +1,69 @@
+version: 2
+
+models:
+  - name: sources_ports
+    description: "Staging model consisting of port details"
+    columns:
+      - name: PID
+        tests:
+          - unique
+          # - not_null
+      - name: CODE
+        tests:
+          - unique
+
+  - name: sources_regions
+    description: "Staging model consisting of port details"
+    columns:
+        - name: SLUG
+          tests:
+           - not_null
+        - name: NAME
+          tests:
+          - not_null  
+
+  - name: sources_exchange_Rate
+    description: "Staging model consisting of exchange rate for daily"
+    columns:
+        - name: DAY
+          tests:
+           - not_null
+        - name: CURRENCY
+          tests:
+          - not_null  
+        - name: RATE
+          tests:
+          - not_null  
+
+  - name: sources_datapoints
+    description: "Staging model consisting of valid to and valid from information for ports"
+    columns:
+        - name: CREATED
+          tests:
+           - not_null
+        - name: D_ID
+          tests:
+          - unique  
+          - not_null  
+        - name: EQUIPMENT_ID
+          tests:
+          - not_null  
+          - accepted_values:           
+              values: [1,2,3,4,5,6]
+              quote: false    
+
+  - name: sources_charges
+    description: "Staging model for currency charges"
+    columns:
+        - name: D_ID
+          tests:
+           - not_null
+        - name: CURRENCY
+          tests:  
+          - not_null  
+        - name: CHARGE_VALUE
+          tests:
+          - not_null  
+   
+
+              
